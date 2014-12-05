@@ -1,0 +1,37 @@
+{
+  "name": "node-search",
+  "version": "0.0.1",
+  "description": "Node.js api search cli",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": {
+    "nodeapi": "index.js"
+  },
+  "author": "Nicolás Arias",
+  "license": "MIT",
+  "dependencies": {
+    "minimist": "^1.1.0",
+    "open": "0.0.5",
+    "superagent": "^0.21.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ezakto/node-search.git"
+  },
+  "keywords": [
+    "node",
+    "docs",
+    "documentation",
+    "api",
+    "search",
+    "cli"
+  ],
+  "bugs": {
+    "url": "https://github.com/ezakto/node-search/issues"
+  },
+  "homepage": "https://github.com/ezakto/node-search"
+}
