@@ -2,13 +2,14 @@
 
 var open = require('open');
 var req = require('superagent');
-var arg = require('minimist')(process.argv.slice(2), { boolean: ['o', 'open'] });
+var arg = require('minimist')(process.argv.slice(2), { boolean: ['o', 'open', 'v', 'verbose'] });
 var url = 'http://nodejs.org/api/';
 var o = arg.o || arg.open || (arg._[0] == 'open' ? arg._.shift() : false);
 
 var keywords = arg._;
 var page = arg.p || arg.page || 1;
 var limit = arg.l || arg.limit || 5;
+var verbose = arg.v || arg.verbose || false;
 
 req.get(url + 'all.json').end(function(err, res){
     var api = [];
@@ -18,7 +19,7 @@ req.get(url + 'all.json').end(function(err, res){
         if (api.length) {
             if (o) open(api[0].url);
             else console.log('\n' + api.map(function(doc){
-                return '- ' + doc.title + '\n  ' + doc.url;
+                return '- ' + doc.title + '\n  ' + doc.url + (verbose ? '\n  ' + doc.desc : '');
             }).slice((page-1)*limit, (page-1)*limit + limit).join('\n\n') + '\n');
         }
     }
@@ -40,6 +41,7 @@ function map(target, obj, parent, level, _url) {
     result = {
       title: obj.textRaw,
       name: obj.name,
+      desc: verbose && obj.desc ? cleanhtml(obj.desc) : '',
       parent: parent || ''
     };
     if (level == 2) {
@@ -64,3 +66,7 @@ function map(target, obj, parent, level, _url) {
 function urlize(text) {
     return text.toLowerCase().replace(/[^a-z]+/g, '_').replace(/_+$/, '');
 };
+
+function cleanhtml(str) {
+    return str.split('\n').slice(0, 2).join(' ').replace(/<\/?[a-z0-9][^>]*>|&[a-z0-9#]+;/g, '').substr(0, 200) + ' (...)';
+}

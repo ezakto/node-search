@@ -18,11 +18,16 @@ nodeapi [options] [command] <query>
 * `-o`, `--open` same as `nodeapi open`.
 * `-p`, `--page` result's page. Defaults to 1.
 * `-l`, `--limit` results per page. Defaults to 5.
+* `-v`, `--verbose` If set, shows a fragment of the result descriptions.
 
 ## Examples
 List a few results:
 ```bash
 nodeapi fs read
+```
+With description
+```bash
+nodeapi -v fs
 ```
 Open the first result:
 ```bash
