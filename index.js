@@ -3,7 +3,7 @@
 var open = require('open');
 var req = require('superagent');
 var arg = require('minimist')(process.argv.slice(2), { boolean: ['o', 'open', 'v', 'verbose'] });
-var url = 'http://nodejs.org/api/';
+var url = 'https://nodejs.org/api/';
 var o = arg.o || arg.open || (arg._[0] == 'open' ? arg._.shift() : false);
 
 var keywords = arg._;
