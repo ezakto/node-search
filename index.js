@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
+var fs = require('fs');
+var join = require('path').join;
 var open = require('open');
+var mkdirp = require('mkdirp');
 var req = require('superagent');
 var arg = require('minimist')(process.argv.slice(2), { boolean: ['o', 'open', 'v', 'verbose'] });
 var url = 'https://nodejs.org/api/';
@@ -10,20 +13,31 @@ var keywords = arg._;
 var page = arg.p || arg.page || 1;
 var limit = arg.l || arg.limit || 5;
 var verbose = arg.v || arg.verbose || false;
+var cache = join(process.env.HOME || process.env.USERPROFILE, '.cache', 'nodeapi');
 
-req.get(url + 'all.json').end(function(err, res){
-    var api = [];
-    if (!err && res.body) {
-        map(api, res.body, null, 1);
-        api = find(api, keywords);
-        if (api.length) {
-            if (o) open(api[0].url);
-            else console.log('\n' + api.map(function(doc){
-                return '- ' + doc.title + '\n  ' + doc.url + (verbose ? '\n  ' + doc.desc : '');
-            }).slice((page-1)*limit, (page-1)*limit + limit).join('\n\n') + '\n');
-        }
-    }
-});
+try {
+  search(JSON.parse(fs.readFileSync(join(cache, 'api.json'), { encoding: 'utf8' })));
+} catch(e) {
+  req.get(url + 'all.json').end(function(err, res){
+      var api = [];
+      if (!err && res.body) {
+          map(api, res.body, null, 1);
+          mkdirp(cache);
+          fs.writeFileSync(join(cache, 'api.json'), JSON.stringify(api));
+          search(api);
+      }
+  });
+}
+
+function search(api) {
+  api = find(api, keywords);
+  if (api.length) {
+      if (o) open(api[0].url);
+      else console.log('\n' + api.map(function(doc){
+          return '- ' + doc.title + '\n  ' + doc.url + (verbose ? '\n  ' + doc.desc : '');
+      }).slice((page-1)*limit, (page-1)*limit + limit).join('\n\n') + '\n');
+  }
+}
 
 function find(target, keywords) {
   return target.filter(function(doc){
