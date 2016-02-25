@@ -55,7 +55,7 @@ function map(target, obj, parent, level, _url) {
     result = {
       title: obj.textRaw,
       name: obj.name,
-      desc: verbose && obj.desc ? cleanhtml(obj.desc) : '',
+      desc: obj.desc ? cleanhtml(obj.desc) : '',
       parent: parent || ''
     };
     if (level == 2) {
